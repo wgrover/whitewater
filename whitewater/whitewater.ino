@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include "secrets.h"
 
 const char* ssid = SECRET_SSID;
@@ -30,18 +31,18 @@ void loop() {
  
     http.begin("https://waterservices.usgs.gov/nwis/iv/?format=json&sites=10257548"); 
     int httpCode = http.GET();
- 
     if (httpCode > 0) { //Check for the returning code
- 
         String payload = http.getString();
         Serial.println(httpCode);
-        Serial.println(payload);
+        // Serial.println(payload);
+        DynamicJsonDocument doc(10000);
+        deserializeJson(doc, payload);
+        const char* sensor = doc["value"]["queryInfo"]["queryURL"];
+        Serial.println(sensor);
       }
- 
     else {
       Serial.println("Error on HTTP request");
     }
- 
     http.end(); //Free the resources
   }
  
