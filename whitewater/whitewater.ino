@@ -51,8 +51,9 @@ void loop() {
         DynamicJsonDocument doc(10000);
         deserializeJson(doc, payload);
         double sensor = doc["value"]["timeSeries"][0]["values"][0]["value"][0]["value"];
-        Serial.println(sensor);
-        ledcWrite(ledChannel, 200); 
+        int pwm = 255.0 * sensor/200.0;
+        Serial.println(pwm);
+        ledcWrite(ledChannel, pwm); 
       }
     else {
       Serial.println("Error on HTTP request");
