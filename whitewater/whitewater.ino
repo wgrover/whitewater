@@ -37,7 +37,7 @@ void loop() {
         // Serial.println(payload);
         DynamicJsonDocument doc(10000);
         deserializeJson(doc, payload);
-        const char* sensor = doc["value"]["queryInfo"]["queryURL"];
+        const char* sensor = doc["value"]["timeSeries"][0]["values"][0]["value"][0]["value"];
         Serial.println(sensor);
       }
     else {
