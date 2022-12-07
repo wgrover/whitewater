@@ -9,6 +9,14 @@ const char* password = SECRET_PASSWORD;
 const char* server = "waterservices.usgs.gov/nwis/iv/?format=json&sites=10257548";
 const int port = 443;
 
+// the number of the LED pin
+const int ledPin = 16;  // 16 corresponds to GPIO16
+
+// setting PWM properties
+const int freq = 5000;
+const int ledChannel = 0;
+const int resolution = 8;
+
 WiFiClientSecure client;
 
 void setup() {
@@ -25,6 +33,8 @@ void setup() {
    Serial.println("IP address: ");
    Serial.println(WiFi.localIP());
    delay(2000);
+   ledcSetup(ledChannel, freq, resolution);
+   ledcAttachPin(ledPin, ledChannel);
 }
 
 void loop() {
@@ -40,8 +50,9 @@ void loop() {
         // Serial.println(payload);
         DynamicJsonDocument doc(10000);
         deserializeJson(doc, payload);
-        const char* sensor = doc["value"]["timeSeries"][0]["values"][0]["value"][0]["value"];
+        double sensor = doc["value"]["timeSeries"][0]["values"][0]["value"][0]["value"];
         Serial.println(sensor);
+        ledcWrite(ledChannel, 200); 
       }
     else {
       Serial.println("Error on HTTP request");
