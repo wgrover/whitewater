@@ -1,3 +1,15 @@
+// Calibration with 10 ohm resistor between pin:
+// ledcWrite   Current [mA]
+//       0            0
+//      32          5.2
+//      64         10.5
+//      96         15.9
+//     128         20.8
+//     160         26.0
+//     192         31.1
+//     224         36.3
+//     255         41.2
+
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
@@ -8,9 +20,7 @@ const char* ssid = SECRET_SSID;
 const char* password = SECRET_PASSWORD;
 const char* server = "waterservices.usgs.gov/nwis/iv/?format=json&sites=10257548";
 const int port = 443;
-
-// the number of the LED pin
-const int ledPin = 16;  // 16 corresponds to GPIO16
+const int ledPin = 16;  // GPIO16, connection to 10 ohm resistor and ammeter
 
 // setting PWM properties
 const int freq = 5000;
