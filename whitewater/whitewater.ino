@@ -16,6 +16,7 @@
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <math.h>
 #include "secrets.h"
 
 const char* ssid = SECRET_SSID;
@@ -28,6 +29,9 @@ const int ledPin = 16;  // GPIO16, connected to ammeter via 10 ohm resistor
 const int freq = 5000;
 const int ledChannel = 0;
 const int resolution = 8;
+
+const float slope = 6.1921;
+const float intercept = -0.7697;
 
 WiFiClientSecure client;
 
@@ -58,13 +62,23 @@ void loop() {
     int httpCode = http.GET();
     if (httpCode > 0) {
       String payload = http.getString();
-      Serial.println(httpCode);
+      Serial.print("http=" + String(httpCode) + "\t");
       // Serial.println(payload);
       DynamicJsonDocument doc(10000);
       deserializeJson(doc, payload);
-      double sensor = doc["value"]["timeSeries"][0]["values"][0]["value"][0]["value"];
-      int pwm = 255.0 * sensor / 200.0;
-      Serial.println(pwm);
+      double flow = doc["value"]["timeSeries"][0]["values"][0]["value"][0]["value"];
+      Serial.print("flow=" + String(flow) + "\t");
+      int pwm = 0;
+      if (flow < 0.1) {
+        pwm = 0;
+      }
+      else if (flow > 1000.0) {
+        pwm = 255;
+      }
+      else {
+        pwm = round( slope * ((log10(flow)+1)*10) + intercept );
+      }
+      Serial.println("PWM=" + String(pwm));
       ledcWrite(ledChannel, pwm);
     }
     else {

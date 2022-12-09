@@ -6,7 +6,7 @@ import math
 ledcWrites = numpy.array([0, 32, 64, 96, 128, 160, 192, 224, 255])
 currents = numpy.array([0, 5.2, 10.5, 15.9, 20.8, 26.0, 31.1, 36.3, 41.2])
 fit = stats.linregress(currents, ledcWrites)
-print(fit.slope, fit.intercept)
+print(f"slope = {fit.slope}\tintercept = {fit.intercept}")
 plt.scatter(currents, ledcWrites)
 plt.plot(currents, fit.slope*currents + fit.intercept)
 plt.xlabel("Current [mA]")
