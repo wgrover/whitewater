@@ -1,4 +1,4 @@
-// Calibration with 10 ohm resistor between pin:
+// Calibration with 10 ohm resistor:
 // ledcWrite   Current [mA]
 //       0            0
 //      32          5.2
@@ -10,6 +10,8 @@
 //     224         36.3
 //     255         41.2
 
+// River flow rate over the last several years maxes out a little above 1000 ft^3/s
+
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
@@ -20,9 +22,9 @@ const char* ssid = SECRET_SSID;
 const char* password = SECRET_PASSWORD;
 const char* server = "waterservices.usgs.gov/nwis/iv/?format=json&sites=10257548";
 const int port = 443;
-const int ledPin = 16;  // GPIO16, connection to 10 ohm resistor and ammeter
+const int ledPin = 16;  // GPIO16, connected to ammeter via 10 ohm resistor
 
-// setting PWM properties
+// PWM properties:
 const int freq = 5000;
 const int ledChannel = 0;
 const int resolution = 8;
@@ -51,9 +53,7 @@ void setup() {
 void loop() {
   digitalWrite(2, HIGH);
   if ((WiFi.status() == WL_CONNECTED)) {
-
     HTTPClient http;
-
     http.begin("https://waterservices.usgs.gov/nwis/iv/?format=json&sites=10257548");
     int httpCode = http.GET();
     if (httpCode > 0) {
