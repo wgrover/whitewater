@@ -87,5 +87,5 @@ void loop() {
     http.end();
   }
   digitalWrite(2, LOW);
-  delay(10000);
+  delay(60000);  // updating every minute
 }
